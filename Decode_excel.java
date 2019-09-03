@@ -7,7 +7,7 @@ public class Decode_excel {
 	public static void main(String[] args) {
 		
 		try {
-			FileInputStream file = new FileInputStream("C:\\Users\\sia\\Desktop\\reads\\ÄÚµå °á°ú\\Align\\Á¶ÇÕ ½Ãµµ -0829 try (1).xlsx");
+			FileInputStream file = new FileInputStream("C:\\Users\\sia\\Desktop\\reads\\ì½”ë“œ ê²°ê³¼\\Align\\ì¡°í•© ì‹œë„ -0829 try (1).xlsx");
 	        XSSFWorkbook workbook = new XSSFWorkbook(file);
 
 	        int rowindex=0;
@@ -18,31 +18,30 @@ public class Decode_excel {
 	        int page_mm=0;
 	        int start_mm=0;
 	        int len_boundary=0;
-	         //½ÃÆ® ¼ö (Ã¹¹øÂ°¿¡¸¸ Á¸ÀçÇÏ¹Ç·Î 0À» ÁØ´Ù)
-	         //¸¸¾à °¢ ½ÃÆ®¸¦ ÀĞ±âÀ§ÇØ¼­´Â FOR¹®À» ÇÑ¹ø´õ µ¹·ÁÁØ´Ù
+	         
 	        XSSFSheet sheet=workbook.getSheetAt(0);
-	         //ÇàÀÇ ¼ö
+	         
 	        int rows=sheet.getPhysicalNumberOfRows();
 	        System.out.println(rows);
 	        for(rowindex=67;rowindex<112;rowindex++){
 	        	
 	        	System.out.println("rowindex"+rowindex);
-	            //ÇàÀ»ÀĞ´Â´Ù
+	            
 	            XSSFRow row=sheet.getRow(rowindex);
 	            if(row !=null){
-	                //¼¿ÀÇ ¼ö
+	                
 	                int cells=row.getPhysicalNumberOfCells();
 	                columnindex=1;
 
 	                if(columnindex==1){
-	                    //¼¿°ªÀ» ÀĞ´Â´Ù
+	                    
 	                    XSSFCell cell=row.getCell(columnindex);
 	                    int value=0;
-	                    //¼¿ÀÌ ºó°ªÀÏ°æ¿ì¸¦ À§ÇÑ ³ÎÃ¼Å©
+	                  
 	                    if(cell==null){
 	                        continue;
 	                    }else{
-	                        //Å¸ÀÔº°·Î ³»¿ë ÀĞ±â
+	                       
 	                        switch (cell.getCellType()){
 	                        case FORMULA:
 		                           break;
@@ -64,14 +63,14 @@ public class Decode_excel {
 	                }
 	                
 	               if(columnindex==3){
-	                    //¼¿°ªÀ» ÀĞ´Â´Ù
+	                    
 	                    XSSFCell cell=row.getCell(columnindex);
 	                    int value=0;
-	                    //¼¿ÀÌ ºó°ªÀÏ°æ¿ì¸¦ À§ÇÑ ³ÎÃ¼Å©
+	                   
 	                    if(cell==null){
 	                        continue;
 	                    }else{
-	                        //Å¸ÀÔº°·Î ³»¿ë ÀĞ±â
+	                       
 	                        switch (cell.getCellType()){
 	                        case FORMULA:
 		                           break;
@@ -93,14 +92,14 @@ public class Decode_excel {
 	                }
 	                
 	                if(columnindex==4){
-	                    //¼¿°ªÀ» ÀĞ´Â´Ù
+	                   
 	                    XSSFCell cell=row.getCell(columnindex);
 	                    int value=0;
-	                    //¼¿ÀÌ ºó°ªÀÏ°æ¿ì¸¦ À§ÇÑ ³ÎÃ¼Å©
+	                    
 	                    if(cell==null){
 	                        continue;
 	                    }else{
-	                        //Å¸ÀÔº°·Î ³»¿ë ÀĞ±â
+	                        
 	                        switch (cell.getCellType()){
 	                        case FORMULA:
 		                           break;
@@ -122,7 +121,7 @@ public class Decode_excel {
 	                }
 	             }
 	            rowindex_v=rowindex+1;
-	            output="C:\\\\Users\\\\sia\\\\Desktop\\\\reads\\ÄÚµå °á°ú\\Align\\excel\\"+rowindex_v+".txt";
+	            output="C:\\\\Users\\\\sia\\\\Desktop\\\\reads\\ì½”ë“œ ê²°ê³¼\\Align\\excel\\"+rowindex_v+".txt";
 	   
 	            System.out.println(output);
 	            Decode d=new Decode(page_mm,start_mm,len_boundary ,output);
