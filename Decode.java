@@ -17,18 +17,18 @@ public class Decode {
 	static String file = "C:\\Users\\sia\\Desktop\\reads\\Merged_hunmin_total_0530.txt";
 	//static String file = "C:\\Users\\sia\\Desktop\\reads\\sequence_p.txt";
 	
-	//파일 이름을 코드 돌릴 때마다 다르게 해 줘야 해요 
-    static String output2= "C:\\Users\\sia\\Desktop\\reads\\코드 결과\\Align\\015_smm1.txt"; //Page1의 오차범위 (0~1)결과
-    static String output = "C:\\Users\\sia\\Desktop\\reads\\코드 결과\\Align\\015_smm1_wide.txt"; 
-    static String line_1=null;
+	
+    	static String output2= "C:\\Users\\sia\\Desktop\\reads\\肄붾뱶 寃곌낵\\Align\\015_smm1.txt"; 
+    	static String output = "C:\\Users\\sia\\Desktop\\reads\\肄붾뱶 寃곌낵\\Align\\015_smm1_wide.txt"; 
+    	static String line_1=null;
   
-    public static BufferedWriter bw;
+	public static BufferedWriter bw;
 	public static BufferedWriter bw2;
 	
-	//변경 가능한 변수
-	static int min_boundary;  // line length의 최소 길이
-	static int max_boundary;  // line length의 최대 길이
-	static int error_range=7;     // 오차 범위(+-) 
+	
+	static int min_boundary;
+	static int max_boundary;  
+	static int error_range=7;  
 	static int page_mm=5;         // page miss match
 	static int start_mm=1;  // start, end miss match  
 	static int length=800;
@@ -60,21 +60,21 @@ public class Decode {
 	    	  bw= new BufferedWriter( new FileWriter(output));
 	    	  bw2= new BufferedWriter( new FileWriter(output2));
 	    	  
-	    	  while ((origin_line=br.readLine()) != null) { //파일을 한줄씩 읽는다
+	    	  while ((origin_line=br.readLine()) != null) { 
     			  
 	    		  int idx1 = 0;//line.indexOf(p1_F) ; 
 	    		  int idx2 = 0;// line.lastIndexOf(p1_R) ;
 	    		  
 	    		  line_num++;
 	    		  
-	    		  if(line_num%100000==0) {  // 결과 진행 상황을 알기 위해 100000줄 씩 진행될 때마다 line_number 출력
+	    		  if(line_num%100000==0) { 
 	    			  System.out.println("line number: "+line_num);
 	    		  }
 	    		  
 
 	    		  String line=origin_line.replaceAll(" ","");
 	    		  
-	    		  if( line.length() < 5*p1_F.length() ) { //line(파일의 한 줄)의 길이가 page의 길이의 5배보다 적으면 다음 line으로 넘어간다.
+	    		  if( line.length() < 5*p1_F.length() ) { 
 	    			  continue;
 	    		  }
 	    		  
@@ -82,8 +82,6 @@ public class Decode {
 	    		  if(65>check||check>90)
 	    			  continue;
 	    		  
-	    		  
-	    	//page1 data를 이용해서 line1을 가져온다.	 
 
 	    		Vector<Integer> pIdx1 = new Vector<Integer>();
 	    		Vector<Integer> pIdx2 = new Vector<Integer>();
@@ -91,23 +89,23 @@ public class Decode {
 					
 				String p1_F1 = p1_F.substring(0, 15);
 					
-				lineCheck(line, p1_F, s_score1 ,pIdx1); //p1_F1이 시작되는 위치를 해당 vector(pIdx1)에 담아준다.
+				lineCheck(line, p1_F, s_score1 ,pIdx1); 
 					
 					
    				String p1_R1 = p1_R.substring(0, 15);
 					
-				lineCheck(line, p1_R, s_score2 ,pIdx2);//p1_R1이 시작되는 위치를 해당 vector(pIdx2)에 담아준다.
+				lineCheck(line, p1_R, s_score2 ,pIdx2);
 					
 					
-				if(pIdx1.size()==0||pIdx2.size()==0) { //Vector size가 0이라는 것은 그 line에 page서열이 없다는 것. 
-				    	continue; //다음 line으로 넘긴다.
+				if(pIdx1.size()==0||pIdx2.size()==0) { 
+				    	continue; 
 				}
 					
-				idx1=(int)pIdx1.get(0); // pIdx1의 첫번째 요소를 가져온다
-				idx2=(int)pIdx2.get(pIdx2.size()-1); //pIdx2의 마지막 요소를 가져온다.
+				idx1=(int)pIdx1.get(0);
+				idx2=(int)pIdx2.get(pIdx2.size()-1);
 				
 				if(idx2>idx1+p1_F.length()) {  
-					line_1 = line.substring(idx1+p1_F.length(),idx2); //line을 p_F~p_R로 잘라준다
+					line_1 = line.substring(idx1+p1_F.length(),idx2); 
 				}
 				else {
 					continue;
@@ -115,7 +113,7 @@ public class Decode {
 				
 				count++;
 				//result
-				getOutput(line_1,line_num,bw2,bw);// 이 method를 통해 line에 따른 결과를 파일로 출력한다.
+				getOutput(line_1,line_num,bw2,bw);
 		
 	   	  }
 	    	  System.out.println("line num:"+line_num);
@@ -154,87 +152,75 @@ public class Decode {
 	}
 	
 	
-	
-	
-	/*getOutput method에서는 line을 가져와서 start~end로 line을 자르고 
-	 * getScore method를 통해 line에 "TATT"/ "ACCC"를 비교하면서 score를 생성
-	 * toForcedBinary method를 통해   binary number로 변환
-	 * file로 결과를 출력한다.
-	 * */
 	public static void getOutput(String line, int line_num, BufferedWriter bw2,BufferedWriter bw) {
 		
 		try {	
-			    String fresult1=null;
+			String fresult1=null;
 		
-				String zero = "TATT";
-			    String one = "ACCC";
+			String zero = "TATT";
+			String one = "ACCC";
 		
-			    String score = null;
+			String score = null;
 			    
-				//start와 end의 위치를 찾아서 line을 start~end 사이로 끊는다.  
-			    
-				Vector<Integer> startIdx = new Vector<Integer>();
-				Vector<Integer> endIdx=new Vector<Integer>();
+			Vector<Integer> startIdx = new Vector<Integer>();
+		      	Vector<Integer> endIdx=new Vector<Integer>();
 				
-				int start_score=0;
-				int end_score=0;
-				int num=0;
-				int num2=0;
+			int start_score=0;
+			int end_score=0;
+		        int num=0;
+		        int num2=0;
 				
-				String start_true = start.substring(0, 15);
+		        String start_true = start.substring(0, 15);
 				
-				lineCheck_o(line, start, start_score ,startIdx,num);
+			lineCheck_o(line, start, start_score ,startIdx,num);
 						
-				String end_true = end.substring(0, 15);
+			String end_true = end.substring(0, 15);
 						
-				lineCheck_o(line, end, end_score ,endIdx,num2);
+			lineCheck_o(line, end, end_score ,endIdx,num2);
 						
-				if(startIdx.size()==0||endIdx.size()==0) {
-					throw new Exception();
-				}
+			if(startIdx.size()==0||endIdx.size()==0) {
+				throw new Exception();
+			}
 						
-				int idx_start=(int)startIdx.get(0);
-				int idx_end=(int)endIdx.get(endIdx.size()-1); 
-						
-				if(idx_end>idx_start+start.length()) {
-					line=line.substring(idx_start+start.length(),idx_end);
-				}
-				else {
-					throw new Exception();
-				}
+		    int idx_start=(int)startIdx.get(0);
+		    int idx_end=(int)endIdx.get(endIdx.size()-1); 
+					
+		    if(idx_end>idx_start+start.length()) {
+			line=line.substring(idx_start+start.length(),idx_end);
+			}
+			else {
+				throw new Exception();
+			}
 				
-				min_boundary=length-length_range;
-				max_boundary=length+length_range;
-				//line 길이 제한 (start와 end 사이의 data)
-				if(line.length()<min_boundary||line.length()>max_boundary)   //line 길이를 바꿀 때 -> 현재 범위는 600~850
-					throw new Exception();
+			min_boundary=length-length_range;
+			max_boundary=length+length_range;
+				
+			if(line.length()<min_boundary||line.length()>max_boundary) 
+				throw new Exception();
 	
-				//line을 "TATT"와 "ACCC"를 비교해가면서 score 내기
-				score = getScore2(line,zero, one);
 				
-				//score의 길이가 0이면 넘긴다.
-				if (score.length()==0)
-					throw new Exception();
+			score = getScore2(line,zero, one);
+			
+			if (score.length()==0)
+				throw new Exception();
 				
-				//score를 오차범위 0~1인 binary number로 변환
-				fresult1 = toForcedBinary1(score) ;
+			fresult1 = toForcedBinary1(score) ;
 				
 				
-				if (fresult1==null) {
-					throw new Exception();
-				}
+			if (fresult1==null) {
+				throw new Exception();
+			}
 				
-				//file에 결과 출력
-				bw2.write(">>"+line_num+ "\r\n");
-				bw2.write(fresult1.replaceAll(" ", "")+"\r\n");
-			    bw2.flush();
+			bw2.write(">>"+line_num+ "\r\n");
+			bw2.write(fresult1.replaceAll(" ", "")+"\r\n");
+			bw2.flush();
 			    
-			    bw.write(">> line number:"+line_num+ "\r\n");		
-				bw.write( "> between p_F and p_R : " + "\r\n");
-				bw.write( line+"\r\n");
-				bw.write( "line to binary code error 0-1:"+"\r\n");
-				bw.write(score+"\n"+fresult1+"\r\n");
-				bw2.flush();
+			bw.write(">> line number:"+line_num+ "\r\n");		
+			bw.write( "> between p_F and p_R : " + "\r\n");
+			bw.write( line+"\r\n");
+			bw.write( "line to binary code error 0-1:"+"\r\n");
+			bw.write(score+"\n"+fresult1+"\r\n");
+			bw2.flush();
 				
 
 		}
@@ -243,7 +229,7 @@ public class Decode {
 	}
 	
 	
-	//이 method는 두 문자열을 비교해서 오차 문자의 수를 return해준다.
+	
 	public static int GetEditDistance(String sourceString, String destinationString) {
 		if (sourceString == null || destinationString == null){
 	        throw new IllegalArgumentException("String cannot be null"); 
@@ -265,24 +251,6 @@ public class Decode {
 	    }
 	    return distance;
 	  }
-	
-	
-	
-	public static int testNWAlignment(String one, String two) {
-		AlignmentResult result=NeedlemanWunsch.computeNWAlignment(one,two,new SimpleAlignmentParameters());
-		int matches=0;
-		int gaps=0;
-		String[] alignments=result.getAlignments();
-			
-		for(int k=0;k<alignments[0].length();k++) {
-			if(alignments[0].charAt(k)==alignments[1].charAt(k)) {
-				matches++;
-			}
-			if(alignments[0].charAt(k)=='-'||alignments[1].charAt(k)=='-')
-				gaps++;
-		}
-		return result.getTotalCost();
-	}
 	
 	public static int align(String a, String b) {
 		  
@@ -329,7 +297,7 @@ public class Decode {
 	    return score;
 	}
 	
-	//line을 zero와 one 서열로 비교해서 오차의 개수를 나열한 score를 return해준다.
+	
 	public static String getScore2(String line, String zero, String one ) {
 			
 		String score = "";
@@ -343,8 +311,8 @@ public class Decode {
 		  int zero_ = Decoder.getEditDistance(line.substring(x,x+4), zero);
 		  int one_ = Decoder.getEditDistance(line.substring(x,x+4), one);
 	
-		  zeros_ = zeros_+zero_; //""+zero와 line의 오차범위
-		  ones_ = ones_ + one_; //""+one과line의 오차범위
+		  zeros_ = zeros_+zero_; 
+		  ones_ = ones_ + one_; 
 	
 	  	}
 				
@@ -355,7 +323,7 @@ public class Decode {
 	public static int min(int a, int b, int c) {
 		return Math.min((Math.min(a,b)),c);
 	}
-	//score에서 0을 찾아서 그에 따른 결과를 출력하게 한다. 최종 결과를 출력하게 해주는 method
+	
 	public static String toForcedBinary2 (String score) {
 		
 		String [] arr = score.split("\n");
@@ -388,7 +356,7 @@ public class Decode {
 					int min_one = 1000;
 					int min1_idx = -1;
 					
-					for( int j = 1 ;  j<= error_range ; j++){   //오차범위 변경시 j<=n에서 n을 지정해주면 됩니다
+					for( int j = 1 ;  j<= error_range ; j++){  
 
 						int tmp0 = Integer.parseInt( zero_.charAt(i+j)+"" );
 						
@@ -398,7 +366,7 @@ public class Decode {
 						}
 						tmp0 = Integer.parseInt( zero_.charAt(i-j)+"" );
 						
-						if( tmp0 < min_zero ) {//4=4이므로 건너뜀
+						if( tmp0 < min_zero ) {
 							min_zero = tmp0;
 							min0_idx = (-1)* j;
 						}
@@ -450,12 +418,12 @@ public class Decode {
 						else if(min_one==min_zero) {
 							if(Math.abs(min1_idx)<Math.abs(min0_idx)) {
 								
-								if( i + min1_idx > result.length() ) { //오차범위가 +일 때
+								if( i + min1_idx > result.length() ) { 
 									for( int k=0 ; k< min1_idx ; k ++) {
 										result = result+ " ";
 									}
 									result = result + "1";							
-								}else { //오차범위가 -일 때
+								}else {
 									result = result.substring(0, i+min1_idx)+"1"; 
 								}
 								num = 1;
@@ -499,7 +467,6 @@ public class Decode {
 	
 	}
 	
-	//score에서 0 또는 1을 찾아서 그에 따른 결과를 출력하게 한다. 최종 결과를 출력하게 해주는 method
 	public static String toForcedBinary1 (String score) {
 		
 		String [] arr = score.split("\n");
@@ -542,7 +509,7 @@ public class Decode {
 						int min_one = 1000;
 						int min1_idx = 0;
 						
-						for( int j = 1 ;  j<= error_range ; j++){   //오차범위 변경시 j<=n에서 n을 지정해주면 됩니다
+						for( int j = 1 ;  j<= error_range ; j++){ 
 	
 							int tmp0 = Integer.parseInt( zero_.charAt(i+j)+"" );
 							
@@ -572,28 +539,28 @@ public class Decode {
 						}
 						
 						if( min_one < 2 || min_zero < 2) {
-							if( min_one < min_zero) { //min_one이 0이고, min_zero가 1일 때
+							if( min_one < min_zero) { 
 		
-								if( i + min1_idx > result.length() ) { //오차범위가 +일 때
+								if( i + min1_idx > result.length() ) { 
 									for( int k=0 ; k< min1_idx ; k ++) {
 										result = result+ " ";
 									}
 									result = result + "1";							
-								}else { //오차범위가 -일 때
+								}else { 
 									result = result.substring(0, i+min1_idx)+"1"; 
 								}
 								
 								num = 1;
 								i = i + min1_idx;
 								
-							}else if ( min_zero < min_one) { //min_one이 1이고, min_zero가 0일 때
+							}else if ( min_zero < min_one) { 
 								
-								if( i + min0_idx > result.length() ) { //오차범위가 +일 때
+								if( i + min0_idx > result.length() ) { 
 									for( int k=0 ; k< min0_idx ; k ++) {
 										result = result+ " ";
 									}
 									result = result + "0";							
-								}else { //오차범위가 -일 때
+								}else { 
 									result = result.substring(0, i+min0_idx)+"0";
 								}
 								
@@ -604,12 +571,12 @@ public class Decode {
 							else if(min_one==min_zero) {
 								if(Math.abs(min1_idx)>Math.abs(min0_idx)) {
 									
-									if( i + min0_idx > result.length() ) { //오차범위가 +일 때
+									if( i + min0_idx > result.length() ) { 
 										for( int k=0 ; k< min0_idx ; k ++) {
 											result = result+ " ";
 										}
 										result = result + "0";							
-									}else { //오차범위가 -일 때
+									}else { 
 										result = result.substring(0, i+min0_idx)+"0";
 									}
 									
@@ -619,12 +586,12 @@ public class Decode {
 								}
 								else if(Math.abs(min1_idx)<Math.abs(min0_idx)) {
 									
-									if( i + min1_idx > result.length() ) { //오차범위가 +일 때
+									if( i + min1_idx > result.length() ) {
 										for( int k=0 ; k< min1_idx ; k ++) {
 											result = result+ " ";
 										}
 										result = result + "1";							
-									}else { //오차범위가 -일 때
+									}else { 
 										result = result.substring(0, i+min1_idx)+"1"; 
 									}
 									
@@ -662,7 +629,7 @@ public class Decode {
 			
 			score=align(line.substring(z, (z+page.length()) ), page);
 			
-			if( score <= page_mm ) {    // page miss match 설정 -> score<=n 에서 n을 변경
+			if( score <= page_mm ) {   
 				pIdx.add(z);
 			}
 		}	
@@ -674,7 +641,7 @@ public class Decode {
 			
 			score=align(line.substring(z, (z+page.length()) ), page);
 			
-			if( score <= start_mm ) {    // page miss match 설정 -> score<=n 에서 n을 변경
+			if( score <= start_mm ) {    
 				pIdx.add(z);
 			}
 		}	
