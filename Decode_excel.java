@@ -7,7 +7,7 @@ public class Decode_excel {
 	public static void main(String[] args) {
 		
 		try {
-			FileInputStream file = new FileInputStream("\home\hdseo\repositories\LabDecoder\LabDecoder\excel.xlsx");
+			FileInputStream file = new FileInputStream("/home/hdseo/lab/LabDecoder/excel.xlsx");
 	        XSSFWorkbook workbook = new XSSFWorkbook(file);
 
 	        int rowindex=0;
