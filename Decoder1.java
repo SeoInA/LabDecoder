@@ -244,22 +244,6 @@ public class Decoder1 {
 	}
 	
 	
-	public static int testNWAlignment(String one, String two) {
-		AlignmentResult result=NeedlemanWunsch.computeNWAlignment(one,two,new SimpleAlignmentParameters());
-		int matches=0;
-		int gaps=0;
-		String[] alignments=result.getAlignments();
-			
-		for(int k=0;k<alignments[0].length();k++) {
-			if(alignments[0].charAt(k)==alignments[1].charAt(k)) {
-				matches++;
-			}
-			if(alignments[0].charAt(k)=='-'||alignments[1].charAt(k)=='-')
-				gaps++;
-		}
-		return result.getTotalCost();
-	}
-	
 	
 	public static int GetEditDistance(String sourceString, String destinationString) {
 		if (sourceString == null || destinationString == null){
