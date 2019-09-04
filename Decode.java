@@ -1,9 +1,6 @@
 import java.io.*;
 import java.util.Vector;
 
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.xssf.usermodel.*;
-
 public class Decode {
 
 	
@@ -308,8 +305,8 @@ public class Decode {
 		
 		for( int x=0 ; x< line.length()-3 ; x++) {
 					
-		  int zero_ = Decoder.getEditDistance(line.substring(x,x+4), zero);
-		  int one_ = Decoder.getEditDistance(line.substring(x,x+4), one);
+		  int zero_ =GetEditDistance(line.substring(x,x+4), zero);
+		  int one_ =GetEditDistance(line.substring(x,x+4), one);
 	
 		  zeros_ = zeros_+zero_; 
 		  ones_ = ones_ + one_; 
