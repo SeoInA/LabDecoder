@@ -66,7 +66,7 @@ public class Decode_main {
 		    case 11:
 		    	p1_F = "ATCCACGATAAGACATCCATAGTTACTACG";
 			    p1_R = "TCTACACCTCAACTCCTGCACTGTGTGAAT";
-			    insert_len=672;.txt";
+			    insert_len=672;
 			    break;
 		    case 12:
 		    	p1_F = "TCGTCCGTAATAATTGGTGGTCTTCATAAG"; 
