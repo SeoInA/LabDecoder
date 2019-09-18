@@ -14,7 +14,7 @@ public class Decoder1 {
 	//static String file = "C:\\Users\\sia\\Desktop\\reads\\practice2.txt";
 	//static String file = "C:\\Users\\sia\\Desktop\\reads\\Merged_hunmin_total_0530.txt";
 	
-    static String output; \
+    static String output;
     static String line_1=null;
 
 	public static BufferedWriter bw2;
