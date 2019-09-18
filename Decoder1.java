@@ -4,30 +4,37 @@ import java.util.Vector;
 public class Decoder1 {
 
 	
-	public static String p_F = "TGCGTTGGGTGTCCGTCAGTCAATTATCAA"; 
-	public static String p_R = "TATATCGTACCCGGCGGTACTACTCTCTTA";
+	public static String p_F = ""; 
+	public static String p_R = "";
 
 	public static String start = "CAGTCGCTCCACAAGTACCAGCCTCGTCTCCACAT";
 	public static String end = "CCGTCAATCTTGCCATTGCTTGCTCAATCATATCC";
 	
-	static String file = "C:\\Users\\sia\\Desktop\\reads\\Hunmin_Total2_High_0819//20min_load//Merge Output File.txt";
-	//static String file = "C:\\Users\\sia\\Desktop\\reads\\practice2.txt";
+	//static String file = "C:\\Users\\sia\\Desktop\\reads\\Hunmin_Total2_High_0819//240min_load//Merge Output File.txt";
+	static String file = "/home/hdseo/LabDecoder/Merge_Output_File_.txt";
 	//static String file = "C:\\Users\\sia\\Desktop\\reads\\Merged_hunmin_total_0530.txt";
 	
     static String output;
     static String line_1=null;
 
 	public static BufferedWriter bw2;
-
-	static int min_boundary; 
-	static int max_boundary;  
-	static int error_range=6;  
-	static int page_mm=5;         // page miss match
-	static int start_mm=20;        // start, end miss match   
-	static int length=0;
-	static int length_range=30;
 	
-	public Decoder1(String p_F, String p_R, int length,String output) {
+	//변경 가능한 변수
+	static int min_boundary;
+	static int max_boundary;  
+	static int error_range=7;    
+	static int page_mm=12;         // page miss match
+	static int start_mm=3;        // start, end miss match   
+	static int length=0;
+	static int length_range=10;
+	static int bit=0;
+	
+	
+	public Decoder1(int p_mm, int s_mm, int len_boundary,int bit,String p_F, String p_R, int length,String output) {
+		this.page_mm=p_mm;
+		this.start_mm=s_mm;
+		this.length_range=len_boundary;
+		this.bit=bit;
 		this.p_F=p_F;
 		this.p_R=p_R;
 		this.length=length;
@@ -41,19 +48,20 @@ public class Decoder1 {
 	      
 	      try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 	    	  String line=null;
-	    	 
+	    	  System.out.println(output);
+	    	  
 	    	  int s_score1=0, s_score2=0;
 	    	 
 	    	  bw2= new BufferedWriter( new FileWriter(output));
 
-	    	  while ((line=br.readLine()) != null) { 
+	    	  while ((line=br.readLine()) != null) {
     			  
 	    		  int idx1 = 0;//line.indexOf(p1_F) ; 
 	    		  int idx2 = 0;// line.lastIndexOf(p1_R) ;
 	    		  
 	    		  line_num++;
 	    		  
-	    		  if(line_num%100000==0) { 
+	    		  if(line_num%100000==0) {  
 	    			  System.out.println("line number: "+line_num);
 	    		  
 	    		  }
@@ -66,26 +74,21 @@ public class Decoder1 {
 	    		  if(65>check||check>90)
 	    			  continue;
 	    		  
-
 	    		Vector<Integer> pIdx1 = new Vector<Integer>();
 	    		Vector<Integer> pIdx2 = new Vector<Integer>();
 
+	    		String p1_F=p_F.substring(0, 15);
+	    		String p1_R=p_R.substring(0, 15);
+				lineCheck(line, p_F, s_score1 ,pIdx1); \
 					
-				String p1_F1 = p_F.substring(0, 15);
-					
-				lineCheck(line, p1_F1, s_score1 ,pIdx1); 
-					
-					
-   				String p1_R1 = p_R.substring(0, 15);
-					
-				lineCheck(line, p1_R1, s_score2 ,pIdx2);
+				lineCheck(line, p_R, s_score2 ,pIdx2);
 					
 					
-				if(pIdx1.size()==0||pIdx2.size()==0) { 
-				    	continue;
+				if(pIdx1.size()==0||pIdx2.size()==0) {
+				    	continue; 
 				}
 					
-				idx1=(int)pIdx1.get(0); 
+				idx1=(int)pIdx1.get(0);
 				idx2=(int)pIdx2.get(pIdx2.size()-1); 
 				
 				if(idx2>idx1+p_F.length()) {  
@@ -139,6 +142,7 @@ public class Decoder1 {
 			    String one = "ACCC";
 		
 			    String score = null;
+			     
 			    
 				Vector<Integer> startIdx = new Vector<Integer>();
 				Vector<Integer> endIdx=new Vector<Integer>();
@@ -146,13 +150,12 @@ public class Decoder1 {
 				int start_score=0;
 				int end_score=0;
 				
-				String start_true = start.substring(0, 15);
+				String start_s=start.substring(0, 15);
+	    		String end_s=end.substring(0, 15);
 				
-				lineCheck_o(line, start, start_score ,startIdx);
+				lineCheck_o(line, start_s, start_score ,startIdx);
 						
-				String end_true = end.substring(0, 15);
-						
-				lineCheck_o(line, end, end_score ,endIdx);
+				lineCheck_o(line, end_s, end_score ,endIdx);
 						
 				if(startIdx.size()==0||endIdx.size()==0) {
 					throw new Exception();
@@ -171,8 +174,7 @@ public class Decoder1 {
 				min_boundary=length-length_range;
 				max_boundary=length+length_range;
 				
-				//line 길이 제한 (start와 end 사이의 data)
-				if(line.length()<min_boundary||line.length()>max_boundary) 
+				if(line.length()<min_boundary||line.length()>max_boundary)   
 					throw new Exception();
 	
 				score = getScore2(line,zero, one);
@@ -187,6 +189,26 @@ public class Decoder1 {
 				if (fresult1==null) {
 					throw new Exception();
 				}
+				
+				int min=bit-5;
+				int max=bit+5;
+			
+				String f_read=fresult1.replaceAll(" ", "");
+				/*
+				if(f_read.length()<min||line.length()>max)  
+					throw new Exception();
+				
+				int count=0;
+				
+				for(int i=0;i<f_read.length();i++) {
+					if(f_read.charAt(i)=='N')
+						count++;
+				}
+				
+				if(count>=4)
+					throw new Exception();
+				*/
+				
 				
 				bw2.write(">>"+line_num+ "\r\n");
 				bw2.write(fresult1.replaceAll(" ", "")+"\r\n");
@@ -242,22 +264,6 @@ public class Decoder1 {
 	}
 	
 	
-	public static int testNWAlignment(String one, String two) {
-		AlignmentResult result=NeedlemanWunsch.computeNWAlignment(one,two,new SimpleAlignmentParameters());
-		int matches=0;
-		int gaps=0;
-		String[] alignments=result.getAlignments();
-			
-		for(int k=0;k<alignments[0].length();k++) {
-			if(alignments[0].charAt(k)==alignments[1].charAt(k)) {
-				matches++;
-			}
-			if(alignments[0].charAt(k)=='-'||alignments[1].charAt(k)=='-')
-				gaps++;
-		}
-		return result.getTotalCost();
-	}
-	
 	public static int GetEditDistance(String sourceString, String destinationString) {
 		if (sourceString == null || destinationString == null){
 	        throw new IllegalArgumentException("String cannot be null"); 
@@ -294,8 +300,8 @@ public class Decoder1 {
 		  int zero_ = GetEditDistance(line.substring(x,x+4), zero);
 		  int one_ = GetEditDistance(line.substring(x,x+4), one);
 	
-		  zeros_ = zeros_+zero_;
-		  ones_ = ones_ + one_;
+		  zeros_ = zeros_+zero_; 
+		  ones_ = ones_ + one_; 
 	
 	  	}
 				
@@ -304,16 +310,13 @@ public class Decoder1 {
 		return score;
 	}
 
-	
 	public static String toForcedBinary1 (String score) {
 		
 		String [] arr = score.split("\n");
 		//System.out.println("score: "+score);
 		String zero_ = arr[0];
 		String one_ = arr[1];
-		
-
-		//handling too short read
+				//handling too short read
 		if( score.length() < 1000 ) { return ""; }
 
 		String result = "      ";
@@ -348,6 +351,7 @@ public class Decoder1 {
 						int min1_idx = 0;
 						
 						for( int j = 1 ;  j<= error_range ; j++){   
+	
 							int tmp0 = Integer.parseInt( zero_.charAt(i+j)+"" );
 							
 							if( tmp0 < min_zero ) {
@@ -376,7 +380,8 @@ public class Decoder1 {
 						}
 						
 						if( min_one < 2 || min_zero < 2) {
-							if( min_one < min_zero) {
+							if( min_one < min_zero) { 
+		
 								if( i + min1_idx > result.length() ) { 
 									for( int k=0 ; k< min1_idx ; k ++) {
 										result = result+ " ";
@@ -396,7 +401,7 @@ public class Decoder1 {
 										result = result+ " ";
 									}
 									result = result + "0";							
-								}else {
+								}else { 
 									result = result.substring(0, i+min0_idx)+"0";
 								}
 								
@@ -407,12 +412,12 @@ public class Decoder1 {
 							else if(min_one==min_zero) {
 								if(Math.abs(min1_idx)>Math.abs(min0_idx)) {
 									
-									if( i + min0_idx > result.length() ) {
+									if( i + min0_idx > result.length() ) { 
 										for( int k=0 ; k< min0_idx ; k ++) {
 											result = result+ " ";
 										}
 										result = result + "0";							
-									}else {
+									}else { 
 										result = result.substring(0, i+min0_idx)+"0";
 									}
 									
@@ -427,7 +432,7 @@ public class Decoder1 {
 											result = result+ " ";
 										}
 										result = result + "1";							
-									}else {
+									}else { 
 										result = result.substring(0, i+min1_idx)+"1"; 
 									}
 									
@@ -462,7 +467,7 @@ public class Decoder1 {
 	public static void lineCheck(String line, String page, int score,Vector<Integer> pIdx) {
 		
 		for( int z=0 ; z< line.length()-page.length()-1 ; z++) {
-			score = GetEditDistance(line.substring(z, (z+page.length()) ), page);
+			score = align(line.substring(z, (z+page.length()) ), page);
 			
 			if( score <= page_mm ) {    
 				pIdx.add(z);
@@ -473,12 +478,11 @@ public class Decoder1 {
 	public static void lineCheck_o (String line, String page, int score,Vector<Integer> pIdx) {
 		
 		for( int z=0 ; z< line.length()-page.length()-1 ; z++) {
-			score = align(line.substring(z, (z+page.length()) ), page);
+			score = GetEditDistance(line.substring(z, (z+page.length()) ), page);
 			
-			if( score <= start_mm ) {    
+			if( score <= start_mm ) {       
 				pIdx.add(z);
 			}
 		}	
 	}
 }
-
