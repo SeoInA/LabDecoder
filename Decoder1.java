@@ -79,7 +79,7 @@ public class Decoder1 {
 
 	    		String p1_F=p_F.substring(0, 15);
 	    		String p1_R=p_R.substring(0, 15);
-				lineCheck(line, p_F, s_score1 ,pIdx1); \
+				lineCheck(line, p_F, s_score1 ,pIdx1); 
 					
 				lineCheck(line, p_R, s_score2 ,pIdx2);
 					
